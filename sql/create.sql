@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS schedule;
+
+CREATE TABLE schedule (
+	id INTEGER PRIMARY KEY,
+	on_date TEXT NOT NULL,
+	due_date TEXT NOT NULL,
+	status TEXT NOT NULL
+);
