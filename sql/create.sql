@@ -1,8 +1,9 @@
-DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS tasks;
 
-CREATE TABLE schedule (
+CREATE TABLE tasks(
 	id INTEGER PRIMARY KEY,
-	on_date TEXT NOT NULL,
+	task TEXT NOT NULL,
 	due_date TEXT NOT NULL,
-	status TEXT NOT NULL
+	t_status TEXT NOT NULL
 );
+

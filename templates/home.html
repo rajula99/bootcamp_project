@@ -3,12 +3,15 @@
 <p>i'm at right<br /> 
     <div class="p-5 text-center">
         <h3>Add tasks here!</h3>
-        <a class="btn btn-primary btn-lg" href="">Add tasks</a>
+        <a class="add btn btn-primary btn-lg" href="{{url_for('todo.addtask')}}">Add tasks</a>
     </div>
 </p>
 <div class="p-5">
     {{cal}}
 </div>
 
+{% endblock %}
 
+{% block left %}
+<p>{{res}}</p>
 {% endblock %}
