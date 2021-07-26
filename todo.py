@@ -17,21 +17,25 @@ def get_calender(tdy):
     return calendar.month(yr, mnth)
 
 
-@bp.route("/")
+@bp.route("/", methods=["GET", "POST",])
 def home():
     conn = db.get_db()
     cursor = conn.cursor()
-    cal = get_calender(today)
-    '''d = dict()
-    for i in range(7):
-        cursor.execute("select * from schedule where due_date = today - datetime.timedelta(days={})".format(i))
-        todo = cursor.fetchall()
-        due = todo[0](2)
-        d[due] = todo
-        '''
-    cursor.execute("select * from tasks")
-    res = cursor.fetchall()
-    return render_template('home.html', cal = cal, res = res)
+    if request.method == "GET":
+        cal = get_calender(today)
+        d = dict()
+        for i in range(7):   #take tasks from the week
+            day = today + datetime.timedelta(days=i)
+            cursor.execute("select id,task from tasks where due_date = ?", [day])
+            t = cursor.fetchall()
+            d[day] = t
+        #day = today + datetime.timedelta(days=3)
+        #cursor.execute("select * from tasks where due_date = ?", [day])
+        #d=cursor.fetchall()
+        return render_template('home.html', cal = cal, d = d)
+    elif request.method == "POST":
+        return render_template('home.html')
+    
 
 @bp.route("/add", methods=["GET", "POST",])
 def addtask():
