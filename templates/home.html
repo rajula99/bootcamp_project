@@ -1,13 +1,30 @@
 {% extends "base.html" %}
-{% block right %}
-<p>i'm at right<br /> 
-    <div class="p-5 text-center">
-        <h3>Add tasks here!</h3>
-        <a class="btn btn-primary btn-lg" href="{{url_for('todo.addtask')}}">Add tasks</a>
-    </div>
-</p>
-<div class="p-5">
+{% block middle %}
+
+<div class="p-5 mt-5 text-center border-bottom">
+    <h3>Add tasks here!</h3>
+    <a class="btn btn-primary btn-lg" href="{{url_for('todo.addtask')}}">Add tasks</a>
+</div>
+
+<div class="p-5 border-bottom d-flex justify-content-center">
     <pre>{{cal}}</pre>
+</div>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <h5 class="card-title text-secondary">Overdue tasks from last week:</h5>
+        {% if l_prev %}
+            <ul>
+            {% for lt in l_prev %}
+                {% for t in lt %}
+                    <li class="text-danger">{{t[0]}}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h5 class="text-success">All clear :)</h5>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}
@@ -17,47 +34,43 @@
 
 {% block left %}
 
-{% for lt in d.items() %}                   {# d is dict -> key:date, value: list of tuple tasks #}
-    <div class="card">
-        <div class="card-header">
-        {{lt[0]}}
+{% for lt in d_nxt.items() %}                   {# d is dict -> key:date, value: list of tuple tasks #}
+    <div class="card mt-2">
+        <div class="card-header" style="background-color:#c3c9c9;">
+        <h5>{{lt[0]}}</h5>
         </div>
         <form action="{{url_for('todo.home')}}" method="POST">
-        <div class="card-body">                     {# lt is list of tuples #} {# value->id #}
-            {{lt}}
+        <div class="card-body" style="background-color:#e1e3e3;">                     {# lt is list of tuples #} {# value->id #}
             
             {% for i in lt[1] %}   
                 {% if i[2] == 'active' %}    
-                <div class="form-check">        
+                <div class="form-check" style="color:#b3464b;">        
                     <input class="form-check-input" type="checkbox" value={{i[0]}} id="updateid" name="updateid" />   
                     <label class="form-check-label" for="updateid">
                         {{i[1]}}
                     </label>
                 </div>
                 {% else %}
-                    <p class="text-muted mb-1"> <del>
+                    <p class="text-muted mb-1 text-decoration-line-through"> 
                         {{i[1]}}
-                    </del>
                     </p>
                 {% endif %}    
                 
             {% endfor %}
             
-        </div>
-        {% if lt[1] %}
-            <div class="mb-2 mr-2 align-self-end">
+        
+        {% if lt[1][1] %}
+            <div class="mb-2 mr-2 d-flex justify-content-end">
                 <button type="submit" class="update btn btn-primary btn-sm">Update</button>
             </div>
         {% endif %}
         </form>
     </div>
-    <br />
+    </div>
+    
 {% endfor %}
 
 {% endblock %}
 
 
 
-{% block middle %}
-{{tmp}}
-{% endblock %}

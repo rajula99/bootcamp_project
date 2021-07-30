@@ -8,7 +8,7 @@ from . import db
 
 bp = Blueprint("todo", "todo", url_prefix="")
 
-today = datetime.date.today()
+today = datetime.date.today() #+ datetime.timedelta(days=1)
 
 def get_calender(tdy):
     today = datetime.date.today()
@@ -23,19 +23,26 @@ def home():
     cursor = conn.cursor()
     if request.method == "GET":
         cal = get_calender(today)
-        d = dict()
+        d_nxt = dict()
+        d_prev = dict()
+        l_prev = list()
         for i in range(7):   #take tasks from the week
             day = today + datetime.timedelta(days=i)
             cursor.execute("select id,task,t_status from tasks where due_date = ?", [day])
             t = cursor.fetchall()
-            d[day] = t
-        #day = today + datetime.timedelta(days=3)
-        #cursor.execute("select * from tasks where due_date = ?", [day])
-        #d=cursor.fetchall()
-        return render_template('home.html', cal = cal, d = d)
+            d_nxt[day] = t
+        for i in range(1,7):
+            day = today - datetime.timedelta(days=i)
+            cursor.execute("select task from tasks where due_date = ? and t_status = 'active'", [day])
+            t = cursor.fetchall()
+            l_prev.append(t)
+        if not any(l_prev):
+            l_prev = []
+        return render_template('home.html', cal = cal, d_nxt = d_nxt, l_prev = l_prev)
+
     elif request.method == "POST": 
         tmp = request.form.get("updateid")
-        tmp = int(tmp)
+        #tmp = int(tmp)
         cursor.execute("update tasks set t_status = 'done' where id = ?", [tmp])
         conn.commit()
         return redirect(url_for("todo.home", tmp = tmp), 302)
