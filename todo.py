@@ -26,15 +26,19 @@ def home():
         d = dict()
         for i in range(7):   #take tasks from the week
             day = today + datetime.timedelta(days=i)
-            cursor.execute("select id,task from tasks where due_date = ?", [day])
+            cursor.execute("select id,task,t_status from tasks where due_date = ?", [day])
             t = cursor.fetchall()
             d[day] = t
         #day = today + datetime.timedelta(days=3)
         #cursor.execute("select * from tasks where due_date = ?", [day])
         #d=cursor.fetchall()
         return render_template('home.html', cal = cal, d = d)
-    elif request.method == "POST":
-        return render_template('home.html')
+    elif request.method == "POST": 
+        tmp = request.form.get("updateid")
+        tmp = int(tmp)
+        cursor.execute("update tasks set t_status = 'done' where id = ?", [tmp])
+        conn.commit()
+        return redirect(url_for("todo.home", tmp = tmp), 302)
     
 
 @bp.route("/add", methods=["GET", "POST",])
