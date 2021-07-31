@@ -4,9 +4,11 @@
 <form action="{{url_for('todo.addtask')}}" method="POST">
     <div class="mb-3">
     <label for="due" class="form-label">Due date: </label>
+
     <input type="date" id="due" name="due-date"
         value={{today}}
         min={{today}} max={{to_date}}>
+        
     </div>
     <div class="mb-3">
     <label for="tasks" class="form-label">Tasks (*comma seperated)</label>
