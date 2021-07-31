@@ -10,8 +10,8 @@ bp = Blueprint("todo", "todo", url_prefix="")
 
 today = datetime.date.today() #+ datetime.timedelta(days=1)
 
-def get_calender(tdy):
-    today = datetime.date.today()
+def get_calendar(tdy):
+    today = tdy
     mnth = int(today.strftime('%m'))
     yr = int(today.strftime('%y'))
     return calendar.month(yr, mnth)
@@ -22,9 +22,8 @@ def home():
     conn = db.get_db()
     cursor = conn.cursor()
     if request.method == "GET":
-        cal = get_calender(today)
+        cal = get_calendar(today)
         d_nxt = dict()
-        d_prev = dict()
         l_prev = list()
         for i in range(7):   #take tasks from the week
             day = today + datetime.timedelta(days=i)
@@ -45,7 +44,7 @@ def home():
         #tmp = int(tmp)
         cursor.execute("update tasks set t_status = 'done' where id = ?", [tmp])
         conn.commit()
-        return redirect(url_for("todo.home", tmp = tmp), 302)
+        return redirect(url_for("todo.home"), 302)
     
 
 @bp.route("/add", methods=["GET", "POST",])
